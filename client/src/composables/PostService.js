@@ -17,18 +17,7 @@ export default function usePostService() {
 
 	// Create Post
 	async function createPost(text) {
-		const res = await axios.post(url, { text });
-		return res;
-	}
-
-	function setPost(newPost) {
-		newPost.createdAt = new Date(newPost.createdAt);
-		posts.value.push(newPost);
-	}
-
-	function removePost(id) {
-    console.log('hey')
-		posts.value = posts.value.filter((post) => post._id !== id);
+		return await axios.post(url, { text });
 	}
 
 	// Delete Post
@@ -36,5 +25,36 @@ export default function usePostService() {
 		return axios.delete(`${url}${id}`);
 	}
 
-	return { posts, getPosts, createPost, setPost, deletePost, removePost };
+	// Update Post
+	async function updatePost(id) {
+		return await axios.put(`${url}${id}`);
+	}
+
+	// Local array manipulation
+	function setPost(newPost) {
+		newPost.createdAt = new Date(newPost.createdAt);
+		posts.value.push(newPost);
+	}
+
+	function removePost(id) {
+		posts.value = posts.value.filter((post) => post._id !== id);
+	}
+
+	function modifyPost(id, newText) {
+		const toModify = posts.value.find((post) => post._id === id);
+		if (toModify) {
+			toModify.text = newText;
+		}
+	}
+
+	return {
+		posts,
+		getPosts,
+		createPost,
+		deletePost,
+		updatePost,
+		setPost,
+		removePost,
+		modifyPost,
+	};
 }

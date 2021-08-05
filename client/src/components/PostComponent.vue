@@ -24,6 +24,7 @@
 					post.createdAt.getFullYear()
 				}}
 				<p class="text">{{ post.text }}</p>
+				<button @click="updatePost(post._id)">Update Post</button>
 			</div>
 		</div>
 	</div>
@@ -41,9 +42,11 @@ export default {
 			posts: use_posts,
 			getPosts: use_getPosts,
 			createPost: use_createPost,
-			setPost: use_setPost,
 			deletePost: use_deletePost,
+			updatePost: use_updatePost,
+			setPost: use_setPost,
 			removePost: use_removePost,
+			modifyPost: use_modifyPost
 		} = usePostService();
 
 		onMounted(async () => {
@@ -76,12 +79,24 @@ export default {
 			}
 		}
 
+		async function updatePost(id) {
+			error.value = '';
+			try {
+				const res = await use_updatePost(id);
+				use_modifyPost(res.data.id, res.data.text)
+			} catch (err) {
+				error.value = err.message;
+				throw error;
+			}
+		}
+
 		return {
 			use_posts,
 			text,
 			error,
 			createPost,
 			deletePost,
+			updatePost,
 		};
 	},
 };
